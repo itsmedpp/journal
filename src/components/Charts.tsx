@@ -15,12 +15,13 @@ import { JournalData, todayKey } from '../types';
 
 interface Props {
   data: JournalData;
+  range: number;
 }
 
-function last7Days(): string[] {
+function lastDays(n: number): string[] {
   const out: string[] = [];
   const d = new Date();
-  for (let i = 6; i >= 0; i--) {
+  for (let i = n - 1; i >= 0; i--) {
     const t = new Date(d);
     t.setDate(d.getDate() - i);
     out.push(todayKey(t));
@@ -28,17 +29,26 @@ function last7Days(): string[] {
   return out;
 }
 
-function shortLabel(key: string): string {
-  return key.slice(5).replace('-', '/');
+function shortLabel(key: string, compact: boolean): string {
+  return compact ? key.slice(8) : key.slice(5).replace('-', '/');
 }
 
-export function Charts({ data }: Props) {
-  const keys = last7Days();
+const axisStyle = { fill: '#9aa0ad', fontSize: 12 };
+const gridStroke = '#333a45';
+const tooltipStyle = {
+  contentStyle: { background: '#23272f', border: '1px solid #333a45', borderRadius: 8 },
+  labelStyle: { color: '#e6e8ec' },
+};
+
+export function Charts({ data, range }: Props) {
+  const keys = lastDays(range);
+  const compact = range > 7;
+  const lbl = (k: string) => shortLabel(k, compact);
 
   const weightRows = keys.map((k) => {
     const d = data.days[k];
     return {
-      day: shortLabel(k),
+      day: lbl(k),
       weight: d?.weight ?? null,
       exercised: d?.exercised ? 1 : 0,
     };
@@ -48,70 +58,77 @@ export function Charts({ data }: Props) {
     const d = data.days[k];
     const inCal = d ? d.foods.reduce((s, f) => s + (f.calories || 0), 0) : 0;
     const outCal = d ? d.exercises.reduce((s, e) => s + (e.caloriesBurned || 0), 0) : 0;
-    return { day: shortLabel(k), 'Calories in': inCal, 'Burned': outCal };
+    return { day: lbl(k), 'Calories in': inCal, 'Burned': outCal };
   });
 
   const ratingRows = keys.map((k) => {
     const d = data.days[k];
     return {
-      day: shortLabel(k),
+      day: lbl(k),
       Mood: d?.mood ?? null,
       Stomach: d?.stomach ?? null,
-      Tired: d?.tired ?? null,
+      Energy: d?.energy ?? null,
     };
   });
+
+  const sleepRows = keys.map((k) => ({
+    day: lbl(k),
+    'Sleep hours': data.days[k]?.sleepHours ?? null,
+  }));
+
+  const barSize = compact ? 8 : 24;
 
   return (
     <div className="charts">
       <section className="card">
-        <h3>Weight &amp; Workouts — last 7 days</h3>
+        <h3>Weight &amp; Workouts — last {range} days</h3>
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={weightRows}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="day" />
-            <YAxis yAxisId="w" domain={['auto', 'auto']} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="day" tick={axisStyle} interval={compact ? 2 : 0} />
+            <YAxis yAxisId="w" domain={['auto', 'auto']} tick={axisStyle} />
             <YAxis yAxisId="e" orientation="right" domain={[0, 1]} tick={false} width={10} />
-            <Tooltip />
+            <Tooltip {...tooltipStyle} />
             <Legend />
             <Bar
               yAxisId="e"
               dataKey="exercised"
               name="Worked out"
-              fill="#82ca9d"
+              fill="#3d9e6b"
               fillOpacity={0.35}
-              barSize={24}
+              barSize={barSize}
             />
             <Line
               yAxisId="w"
               type="monotone"
               dataKey="weight"
               name="Weight"
-              stroke="#4f7cff"
+              stroke="#6f9bff"
               strokeWidth={2}
               connectNulls
-              dot={{ r: 4 }}
+              dot={{ r: 3 }}
             />
           </ComposedChart>
         </ResponsiveContainer>
       </section>
 
       <section className="card">
-        <h3>Calories — last 7 days</h3>
+        <h3>Calories — last {range} days</h3>
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={calRows}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="day" />
-            <YAxis />
-            <Tooltip />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="day" tick={axisStyle} interval={compact ? 2 : 0} />
+            <YAxis tick={axisStyle} />
+            <Tooltip {...tooltipStyle} />
             <Legend />
-            <Bar dataKey="Calories in" fill="#4f7cff" barSize={20} />
-            <Bar dataKey="Burned" fill="#f2a93b" barSize={20} />
+            <Bar dataKey="Calories in" fill="#6f9bff" barSize={barSize} />
+            <Bar dataKey="Burned" fill="#f2a93b" barSize={barSize} />
             {data.calorieGoal != null && (
               <ReferenceLine
                 y={data.calorieGoal}
-                stroke="#d64545"
+                stroke="#e05d5d"
                 strokeDasharray="6 4"
-                label={{ value: `Goal ${data.calorieGoal}`, position: 'insideTopRight', fill: '#d64545' }}
+                label={{ value: `Goal ${data.calorieGoal}`, position: 'insideTopRight', fill: '#e05d5d' }}
               />
             )}
           </ComposedChart>
@@ -119,18 +136,32 @@ export function Charts({ data }: Props) {
       </section>
 
       <section className="card">
-        <h3>Ratings — last 7 days</h3>
+        <h3>Ratings — last {range} days</h3>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={ratingRows}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="day" />
-            <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} />
-            <Tooltip />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="day" tick={axisStyle} interval={compact ? 2 : 0} />
+            <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} tick={axisStyle} />
+            <Tooltip {...tooltipStyle} />
             <Legend />
-            <Line type="monotone" dataKey="Mood" stroke="#4f7cff" strokeWidth={2} connectNulls />
-            <Line type="monotone" dataKey="Stomach" stroke="#82ca9d" strokeWidth={2} connectNulls />
-            <Line type="monotone" dataKey="Tired" stroke="#f2a93b" strokeWidth={2} connectNulls />
+            <Line type="monotone" dataKey="Mood" stroke="#6f9bff" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Stomach" stroke="#3d9e6b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Energy" stroke="#f2a93b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
           </LineChart>
+        </ResponsiveContainer>
+      </section>
+
+      <section className="card">
+        <h3>Sleep — last {range} days</h3>
+        <ResponsiveContainer width="100%" height={220}>
+          <ComposedChart data={sleepRows}>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="day" tick={axisStyle} interval={compact ? 2 : 0} />
+            <YAxis domain={[0, 12]} tick={axisStyle} />
+            <Tooltip {...tooltipStyle} />
+            <Legend />
+            <Bar dataKey="Sleep hours" fill="#9b7bff" barSize={barSize} />
+          </ComposedChart>
         </ResponsiveContainer>
       </section>
     </div>

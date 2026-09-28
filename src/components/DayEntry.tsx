@@ -134,10 +134,10 @@ export function DayEntryForm({ day, onChange }: Props) {
       <section className="card">
         <Rating label="Mood" value={day.mood} onChange={(v) => set({ mood: v })} />
         <Rating label="Stomach" value={day.stomach} onChange={(v) => set({ stomach: v })} />
-        <Rating label="Tired" value={day.tired} onChange={(v) => set({ tired: v })} />
+        <Rating label="Energy" value={day.energy} onChange={(v) => set({ energy: v })} />
       </section>
 
-      <section className="card grid2">
+      <section className="card grid3">
         <label>
           Bathroom trips
           <input
@@ -155,6 +155,17 @@ export function DayEntryForm({ day, onChange }: Props) {
             min={0}
             value={day.weight ?? ''}
             onChange={(e) => set({ weight: e.target.value === '' ? null : Number(e.target.value) })}
+          />
+        </label>
+        <label>
+          Sleep hours
+          <input
+            type="number"
+            step="0.5"
+            min={0}
+            max={24}
+            value={day.sleepHours ?? ''}
+            onChange={(e) => set({ sleepHours: e.target.value === '' ? null : Number(e.target.value) })}
           />
         </label>
       </section>

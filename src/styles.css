@@ -1,10 +1,14 @@
+:root {
+  color-scheme: dark;
+}
+
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: #f4f5f7;
-  color: #222;
+  background: #14161b;
+  color: #e6e8ec;
 }
 
 .app { max-width: 860px; margin: 0 auto; padding: 16px; }
@@ -25,12 +29,12 @@ body {
 .date-nav { display: flex; align-items: center; gap: 6px; }
 .goal { display: flex; align-items: center; gap: 6px; font-size: 14px; }
 .goal input { width: 90px; }
-.status { font-size: 13px; color: #666; }
-.status.error { color: #d64545; }
-.status.dirty { color: #b07800; }
+.status { font-size: 13px; color: #9aa0ad; }
+.status.error { color: #e05d5d; }
+.status.dirty { color: #f2a93b; }
 .error {
-  background: #fdecec;
-  color: #a33333;
+  background: #3a2226;
+  color: #f0a8a8;
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 13px;
@@ -39,13 +43,15 @@ body {
 
 input, textarea {
   padding: 7px 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #3a4150;
   border-radius: 8px;
   font: inherit;
-  background: #fff;
+  background: #1b1e25;
+  color: #e6e8ec;
 }
-input:focus, textarea:focus { outline: 2px solid #4f7cff55; border-color: #4f7cff; }
+input:focus, textarea:focus { outline: 2px solid #6f9bff55; border-color: #6f9bff; }
 textarea { width: 100%; resize: vertical; }
+input[type='date'], input[type='number'] { color-scheme: dark; }
 
 .btn {
   padding: 7px 14px;
@@ -57,25 +63,34 @@ textarea { width: 100%; resize: vertical; }
   cursor: pointer;
 }
 .btn:disabled { opacity: 0.5; cursor: default; }
-.btn.secondary { background: #e4e6eb; color: #222; }
+.btn.secondary { background: #2a2f3a; color: #e6e8ec; border: 1px solid #3a4150; }
 .btn.small { padding: 5px 10px; font-size: 13px; }
 .btn.icon {
   background: transparent;
-  color: #999;
+  color: #777;
   font-size: 18px;
   padding: 2px 8px;
 }
-.btn.icon:hover { color: #d64545; }
+.btn.icon:hover { color: #e05d5d; }
 
 main { display: flex; flex-direction: column; gap: 16px; }
 .day-form { display: flex; flex-direction: column; gap: 12px; }
 .charts { display: flex; flex-direction: column; gap: 12px; }
 
+.range-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #9aa0ad;
+}
+
 .card {
-  background: #fff;
+  background: #1f232b;
+  border: 1px solid #2a2f3a;
   border-radius: 12px;
   padding: 14px 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 .card h3 { margin: 0 0 10px; font-size: 15px; }
 .card-header {
@@ -94,8 +109,8 @@ main { display: flex; flex-direction: column; gap: 16px; }
 .row .num { width: 90px; }
 
 .totals { display: flex; gap: 24px; flex-wrap: wrap; }
-.total { display: flex; flex-direction: column; font-size: 13px; color: #666; }
-.total strong { font-size: 20px; color: #222; }
+.total { display: flex; flex-direction: column; font-size: 13px; color: #9aa0ad; }
+.total strong { font-size: 20px; color: #e6e8ec; }
 
 .rating { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 .rating-label { width: 70px; font-size: 14px; }
@@ -103,27 +118,30 @@ main { display: flex; flex-direction: column; gap: 16px; }
 .rating-btn {
   width: 34px; height: 34px;
   border-radius: 8px;
-  border: 1px solid #ccc;
-  background: #fff;
+  border: 1px solid #3a4150;
+  background: #1b1e25;
+  color: #e6e8ec;
   cursor: pointer;
   font: inherit;
 }
 .rating-btn.active { background: #4f7cff; color: #fff; border-color: #4f7cff; }
 
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-.hint { font-size: 13px; color: #888; margin: 6px 0; }
+.hint { font-size: 13px; color: #7a808d; margin: 6px 0; }
 
 .notice { text-align: center; padding: 32px; }
 
 .modal-backdrop {
   position: fixed; inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.6);
   display: flex; align-items: center; justify-content: center;
   z-index: 10;
 }
 .modal {
-  background: #fff;
+  background: #1f232b;
+  border: 1px solid #2a2f3a;
   border-radius: 12px;
   padding: 20px 24px;
   width: min(420px, 92vw);

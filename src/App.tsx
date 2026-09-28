@@ -22,6 +22,7 @@ export default function App() {
   const [dateKey, setDateKey] = useState(todayKey());
   const [draft, setDraft] = useState<JournalData | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [range, setRange] = useState<7 | 30>(7);
 
   const current = draft ?? data;
   const dirty = draft !== null;
@@ -111,7 +112,24 @@ export default function App() {
 
       <main>
         <DayEntryForm day={day} onChange={setDay} />
-        <Charts data={current} />
+        <div className="range-toggle">
+          <span>History:</span>
+          <button
+            type="button"
+            className={`btn small ${range === 7 ? '' : 'secondary'}`}
+            onClick={() => setRange(7)}
+          >
+            7 days
+          </button>
+          <button
+            type="button"
+            className={`btn small ${range === 30 ? '' : 'secondary'}`}
+            onClick={() => setRange(30)}
+          >
+            30 days
+          </button>
+        </div>
+        <Charts data={current} range={range} />
       </main>
 
       {showSettings && (

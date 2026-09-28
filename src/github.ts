@@ -1,4 +1,4 @@
-import { JournalData, Settings } from './types';
+import { DayEntry, JournalData, normalizeDay, Settings } from './types';
 
 const API = 'https://api.github.com';
 
@@ -45,11 +45,12 @@ export async function loadJournal(s: Settings): Promise<LoadedFile> {
   const json = await res.json();
   const text = b64decode((json.content as string).replace(/\n/g, ''));
   const parsed = JSON.parse(text) as Partial<JournalData>;
+  const days: Record<string, DayEntry> = {};
+  for (const [k, v] of Object.entries(parsed.days ?? {})) {
+    days[k] = normalizeDay(v);
+  }
   return {
-    data: {
-      calorieGoal: parsed.calorieGoal ?? null,
-      days: parsed.days ?? {},
-    },
+    data: { calorieGoal: parsed.calorieGoal ?? null, days },
     sha: json.sha as string,
   };
 }

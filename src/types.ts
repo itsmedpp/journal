@@ -15,9 +15,10 @@ export interface DayEntry {
   exercised: boolean;
   mood: number | null;
   stomach: number | null;
-  tired: number | null;
+  energy: number | null;
   bathroomTrips: number;
   weight: number | null;
+  sleepHours: number | null;
   notes: string;
 }
 
@@ -41,15 +42,27 @@ export function emptyDay(): DayEntry {
     exercised: false,
     mood: null,
     stomach: null,
-    tired: null,
+    energy: null,
     bathroomTrips: 0,
     weight: null,
+    sleepHours: null,
     notes: '',
   };
 }
 
 export function emptyJournal(): JournalData {
   return { calorieGoal: null, days: {} };
+}
+
+// Fill defaults and migrate legacy field names (e.g. tired -> energy)
+export function normalizeDay(raw: Partial<DayEntry> & { tired?: number | null }): DayEntry {
+  const base = emptyDay();
+  return {
+    ...base,
+    ...raw,
+    energy: raw.energy ?? raw.tired ?? null,
+    sleepHours: raw.sleepHours ?? null,
+  };
 }
 
 export function todayKey(d: Date = new Date()): string {
