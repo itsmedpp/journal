@@ -167,12 +167,30 @@ export function DayEntryForm({ day, foodPresets, exercisePresets, onChange }: Pr
           />
           Exercised
         </label>
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={day.nap}
+            onChange={(e) => set({ nap: e.target.checked })}
+          />
+          Nap
+        </label>
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={day.headache}
+            onChange={(e) => set({ headache: e.target.checked })}
+          />
+          Headache
+        </label>
       </section>
 
       <section className="card">
         <Rating label="Mood" value={day.mood} onChange={(v) => set({ mood: v })} />
         <Rating label="Stomach" value={day.stomach} onChange={(v) => set({ stomach: v })} />
         <Rating label="Energy" value={day.energy} onChange={(v) => set({ energy: v })} />
+        <Rating label="Anxiety" value={day.anxiety} onChange={(v) => set({ anxiety: v })} />
+        <Rating label="Stress" value={day.stress} onChange={(v) => set({ stress: v })} />
       </section>
 
       <section className="card grid3">

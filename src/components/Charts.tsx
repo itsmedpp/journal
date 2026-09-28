@@ -68,6 +68,8 @@ export function Charts({ data, range }: Props) {
       Mood: d?.mood ?? null,
       Stomach: d?.stomach ?? null,
       Energy: d?.energy ?? null,
+      Anxiety: d?.anxiety ?? null,
+      Stress: d?.stress ?? null,
     };
   });
 
@@ -147,6 +149,8 @@ export function Charts({ data, range }: Props) {
             <Line type="monotone" dataKey="Mood" stroke="#6f9bff" strokeWidth={2} connectNulls dot={{ r: 2 }} />
             <Line type="monotone" dataKey="Stomach" stroke="#3d9e6b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
             <Line type="monotone" dataKey="Energy" stroke="#f2a93b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Anxiety" stroke="#e05d9e" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Stress" stroke="#b35de0" strokeWidth={2} connectNulls dot={{ r: 2 }} />
           </LineChart>
         </ResponsiveContainer>
       </section>

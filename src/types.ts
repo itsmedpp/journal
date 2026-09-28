@@ -14,9 +14,13 @@ export interface DayEntry {
   exercises: ExerciseEntry[];
   metamucil: boolean;
   exercised: boolean;
+  nap: boolean;
+  headache: boolean;
   mood: number | null;
   stomach: number | null;
   energy: number | null;
+  anxiety: number | null;
+  stress: number | null;
   bathroomTrips: number;
   weight: number | null;
   sleepHours: number | null;
@@ -43,9 +47,13 @@ export function emptyDay(): DayEntry {
     exercises: [],
     metamucil: false,
     exercised: false,
+    nap: false,
+    headache: false,
     mood: null,
     stomach: null,
     energy: null,
+    anxiety: null,
+    stress: null,
     bathroomTrips: 0,
     weight: null,
     sleepHours: null,
