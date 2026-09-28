@@ -1,4 +1,4 @@
-import { DayEntry, JournalData, normalizeDay, Settings } from './types';
+import { emptyJournal, JournalData, normalizeJournal, Settings } from './types';
 
 const API = 'https://api.github.com';
 
@@ -37,7 +37,7 @@ export interface LoadedFile {
 export async function loadJournal(s: Settings): Promise<LoadedFile> {
   const res = await ghFetch(contentsUrl(s), s.token);
   if (res.status === 404) {
-    return { data: { calorieGoal: null, days: {} }, sha: null };
+    return { data: emptyJournal(), sha: null };
   }
   if (!res.ok) {
     throw new Error(`GitHub load failed: ${res.status} ${await res.text()}`);
@@ -45,12 +45,8 @@ export async function loadJournal(s: Settings): Promise<LoadedFile> {
   const json = await res.json();
   const text = b64decode((json.content as string).replace(/\n/g, ''));
   const parsed = JSON.parse(text) as Partial<JournalData>;
-  const days: Record<string, DayEntry> = {};
-  for (const [k, v] of Object.entries(parsed.days ?? {})) {
-    days[k] = normalizeDay(v);
-  }
   return {
-    data: { calorieGoal: parsed.calorieGoal ?? null, days },
+    data: normalizeJournal(parsed),
     sha: json.sha as string,
   };
 }

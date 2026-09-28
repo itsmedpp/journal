@@ -1,7 +1,9 @@
-import { DayEntry as Day } from '../types';
+import { DayEntry as Day, ExerciseEntry, FoodEntry } from '../types';
 
 interface Props {
   day: Day;
+  foodPresets: FoodEntry[];
+  exercisePresets: ExerciseEntry[];
   onChange: (d: Day) => void;
 }
 
@@ -25,17 +27,32 @@ function Rating({ label, value, onChange }: { label: string; value: number | nul
   );
 }
 
-export function DayEntryForm({ day, onChange }: Props) {
+export function DayEntryForm({ day, foodPresets, exercisePresets, onChange }: Props) {
   const set = (patch: Partial<Day>) => onChange({ ...day, ...patch });
 
   const updateFood = (i: number, key: 'name' | 'calories', v: string) => {
     const foods = day.foods.slice();
     foods[i] = { ...foods[i], [key]: key === 'calories' ? Number(v) || 0 : v };
+    if (key === 'name') {
+      const preset = foodPresets.find((p) => p.name === v);
+      if (preset) foods[i].calories = preset.calories;
+    }
     set({ foods });
   };
-  const updateExercise = (i: number, key: 'name' | 'caloriesBurned', v: string) => {
+  const updateExercise = (i: number, key: 'name' | 'caloriesBurned' | 'hours', v: string) => {
     const exercises = day.exercises.slice();
-    exercises[i] = { ...exercises[i], [key]: key === 'caloriesBurned' ? Number(v) || 0 : v };
+    const next = { ...exercises[i] };
+    if (key === 'name') next.name = v;
+    else if (key === 'caloriesBurned') next.caloriesBurned = Number(v) || 0;
+    else next.hours = v === '' ? null : Number(v) || 0;
+    if (key === 'name') {
+      const preset = exercisePresets.find((p) => p.name === v);
+      if (preset) {
+        next.caloriesBurned = preset.caloriesBurned;
+        next.hours = preset.hours;
+      }
+    }
+    exercises[i] = next;
     set({ exercises });
   };
 
@@ -57,6 +74,7 @@ export function DayEntryForm({ day, onChange }: Props) {
             <input
               className="grow"
               placeholder="Food name"
+              list="food-presets"
               value={f.name}
               onChange={(e) => updateFood(i, 'name', e.target.value)}
             />
@@ -73,12 +91,17 @@ export function DayEntryForm({ day, onChange }: Props) {
             </button>
           </div>
         ))}
+        <datalist id="food-presets">
+          {foodPresets.map((p) => (
+            <option key={p.name} value={p.name} />
+          ))}
+        </datalist>
       </section>
 
       <section className="card">
         <div className="card-header">
           <h3>Exercise</h3>
-          <button type="button" className="btn small" onClick={() => set({ exercises: [...day.exercises, { name: '', caloriesBurned: 0 }] })}>
+          <button type="button" className="btn small" onClick={() => set({ exercises: [...day.exercises, { name: '', caloriesBurned: 0, hours: null }] })}>
             + Add exercise
           </button>
         </div>
@@ -88,8 +111,18 @@ export function DayEntryForm({ day, onChange }: Props) {
             <input
               className="grow"
               placeholder="Exercise"
+              list="exercise-presets"
               value={ex.name}
               onChange={(e) => updateExercise(i, 'name', e.target.value)}
+            />
+            <input
+              className="num"
+              type="number"
+              min={0}
+              step="0.25"
+              placeholder="Hours"
+              value={ex.hours ?? ''}
+              onChange={(e) => updateExercise(i, 'hours', e.target.value)}
             />
             <input
               className="num"
@@ -104,6 +137,11 @@ export function DayEntryForm({ day, onChange }: Props) {
             </button>
           </div>
         ))}
+        <datalist id="exercise-presets">
+          {exercisePresets.map((p) => (
+            <option key={p.name} value={p.name} />
+          ))}
+        </datalist>
       </section>
 
       <section className="card totals">

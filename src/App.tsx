@@ -3,7 +3,7 @@ import { Charts } from './components/Charts';
 import { DayEntryForm } from './components/DayEntry';
 import { SettingsPanel } from './components/Settings';
 import { useJournal } from './state';
-import { DayEntry, emptyDay, JournalData, todayKey } from './types';
+import { DayEntry, emptyDay, ExerciseEntry, FoodEntry, JournalData, todayKey } from './types';
 
 function statusText(status: string, dirty: boolean): string {
   if (dirty) return 'Unsaved changes';
@@ -44,7 +44,19 @@ export default function App() {
 
   const handleSave = async () => {
     if (!draft) return;
-    await save(draft);
+    // Collect any newly named food/exercise entries into reusable presets
+    const foods = new Map<string, FoodEntry>();
+    const exercises = new Map<string, ExerciseEntry>();
+    for (const d of Object.values(draft.days)) {
+      for (const f of d.foods) if (f.name.trim()) foods.set(f.name.trim(), f);
+      for (const e of d.exercises) if (e.name.trim()) exercises.set(e.name.trim(), e);
+    }
+    const next: JournalData = {
+      ...draft,
+      foodPresets: [...draft.foodPresets.filter((p) => !foods.has(p.name)), ...foods.values()],
+      exercisePresets: [...draft.exercisePresets.filter((p) => !exercises.has(p.name)), ...exercises.values()],
+    };
+    await save(next);
     setDraft(null);
   };
 
@@ -111,7 +123,12 @@ export default function App() {
       )}
 
       <main>
-        <DayEntryForm day={day} onChange={setDay} />
+        <DayEntryForm
+          day={day}
+          foodPresets={current.foodPresets}
+          exercisePresets={current.exercisePresets}
+          onChange={setDay}
+        />
         <div className="range-toggle">
           <span>History:</span>
           <button

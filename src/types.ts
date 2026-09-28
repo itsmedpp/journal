@@ -6,6 +6,7 @@ export interface FoodEntry {
 export interface ExerciseEntry {
   name: string;
   caloriesBurned: number;
+  hours: number | null;
 }
 
 export interface DayEntry {
@@ -25,6 +26,8 @@ export interface DayEntry {
 export interface JournalData {
   calorieGoal: number | null;
   days: Record<string, DayEntry>;
+  foodPresets: FoodEntry[];
+  exercisePresets: ExerciseEntry[];
 }
 
 export interface Settings {
@@ -51,7 +54,7 @@ export function emptyDay(): DayEntry {
 }
 
 export function emptyJournal(): JournalData {
-  return { calorieGoal: null, days: {} };
+  return { calorieGoal: null, days: {}, foodPresets: [], exercisePresets: [] };
 }
 
 // Fill defaults and migrate legacy field names (e.g. tired -> energy)
@@ -60,8 +63,30 @@ export function normalizeDay(raw: Partial<DayEntry> & { tired?: number | null })
   return {
     ...base,
     ...raw,
+    foods: (raw.foods ?? []).map((f) => ({
+      name: f.name ?? '',
+      calories: f.calories ?? 0,
+    })),
+    exercises: (raw.exercises ?? []).map((e) => ({
+      name: e.name ?? '',
+      caloriesBurned: e.caloriesBurned ?? 0,
+      hours: e.hours ?? null,
+    })),
     energy: raw.energy ?? raw.tired ?? null,
     sleepHours: raw.sleepHours ?? null,
+  };
+}
+
+export function normalizeJournal(raw: Partial<JournalData>): JournalData {
+  const days: Record<string, DayEntry> = {};
+  for (const [k, v] of Object.entries(raw.days ?? {})) {
+    days[k] = normalizeDay(v);
+  }
+  return {
+    calorieGoal: raw.calorieGoal ?? null,
+    days,
+    foodPresets: raw.foodPresets ?? [],
+    exercisePresets: raw.exercisePresets ?? [],
   };
 }
 

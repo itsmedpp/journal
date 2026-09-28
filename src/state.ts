@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { loadJournal, saveJournal } from './github';
-import { DayEntry, emptyJournal, JournalData, normalizeDay, Settings } from './types';
+import { emptyJournal, JournalData, normalizeJournal, Settings } from './types';
 
 const SETTINGS_KEY = 'journal.settings';
 const CACHE_KEY = 'journal.cache';
@@ -34,11 +34,7 @@ function loadCache(): JournalData | null {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as JournalData;
-    const days: Record<string, DayEntry> = {};
-    for (const [k, v] of Object.entries(parsed.days ?? {})) {
-      days[k] = normalizeDay(v);
-    }
-    return { calorieGoal: parsed.calorieGoal ?? null, days };
+    return normalizeJournal(parsed);
   } catch {
     return null;
   }
