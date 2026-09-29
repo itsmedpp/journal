@@ -107,11 +107,14 @@ main { display: flex; flex-direction: column; gap: 16px; }
 .row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
 .row .grow { flex: 1; min-width: 0; }
 .row .num { width: 90px; }
+.row .num-sm { width: 60px; }
 
 .totals { display: flex; gap: 24px; flex-wrap: wrap; }
 .total { display: flex; flex-direction: column; font-size: 13px; color: #9aa0ad; }
 .total strong { font-size: 20px; color: #e6e8ec; }
 
+.rating-group-title { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 15px; }
+.rating-group-title .hint { font-weight: normal; }
 .rating { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 .rating-label { width: 70px; font-size: 14px; }
 .rating-buttons { display: flex; gap: 6px; }

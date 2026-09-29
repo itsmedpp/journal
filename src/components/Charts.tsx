@@ -44,41 +44,43 @@ export function Charts({ data, range }: Props) {
   const keys = lastDays(range);
   const compact = range > 7;
   const lbl = (k: string) => shortLabel(k, compact);
+  const intv = compact ? 2 : 0;
+  const barSize = compact ? 8 : 24;
 
   const weightRows = keys.map((k) => {
     const d = data.days[k];
-    return {
-      day: lbl(k),
-      weight: d?.weight ?? null,
-      exercised: d?.exercised ? 1 : 0,
-    };
+    return { day: lbl(k), weight: d?.weight ?? null, exercised: d?.exercised ? 1 : 0 };
   });
 
   const calRows = keys.map((k) => {
     const d = data.days[k];
-    const inCal = d ? d.foods.reduce((s, f) => s + (f.calories || 0), 0) : 0;
+    const inCal = d
+      ? d.foods.reduce((s, f) => s + (f.calories || 0) * (f.qty || 1), 0)
+        + d.beverages.reduce((s, b) => s + (b.calories || 0) * (b.qty || 1), 0)
+      : 0;
     const outCal = d ? d.exercises.reduce((s, e) => s + (e.caloriesBurned || 0), 0) : 0;
-    return { day: lbl(k), 'Calories in': inCal, 'Burned': outCal };
+    return { day: lbl(k), 'Calories in': inCal, Burned: outCal };
   });
 
-  const ratingRows = keys.map((k) => {
+  const moodEnergyRows = keys.map((k) => {
     const d = data.days[k];
-    return {
-      day: lbl(k),
-      Mood: d?.mood ?? null,
-      Stomach: d?.stomach ?? null,
-      Energy: d?.energy ?? null,
-      Anxiety: d?.anxiety ?? null,
-      Stress: d?.stress ?? null,
-    };
+    return { day: lbl(k), Mood: d?.mood ?? null, Energy: d?.energy ?? null };
+  });
+
+  const anxStressRows = keys.map((k) => {
+    const d = data.days[k];
+    return { day: lbl(k), Anxiety: d?.anxiety ?? null, Stress: d?.stress ?? null };
+  });
+
+  const stomachRows = keys.map((k) => {
+    const d = data.days[k];
+    return { day: lbl(k), Stomach: d?.stomach ?? null };
   });
 
   const sleepRows = keys.map((k) => ({
     day: lbl(k),
     'Sleep hours': data.days[k]?.sleepHours ?? null,
   }));
-
-  const barSize = compact ? 8 : 24;
 
   return (
     <div className="charts">
@@ -87,29 +89,13 @@ export function Charts({ data, range }: Props) {
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={weightRows}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-            <XAxis dataKey="day" tick={axisStyle} interval={compact ? 2 : 0} />
+            <XAxis dataKey="day" tick={axisStyle} interval={intv} />
             <YAxis yAxisId="w" domain={['auto', 'auto']} tick={axisStyle} />
             <YAxis yAxisId="e" orientation="right" domain={[0, 1]} tick={false} width={10} />
             <Tooltip {...tooltipStyle} />
             <Legend />
-            <Bar
-              yAxisId="e"
-              dataKey="exercised"
-              name="Worked out"
-              fill="#3d9e6b"
-              fillOpacity={0.35}
-              barSize={barSize}
-            />
-            <Line
-              yAxisId="w"
-              type="monotone"
-              dataKey="weight"
-              name="Weight"
-              stroke="#6f9bff"
-              strokeWidth={2}
-              connectNulls
-              dot={{ r: 3 }}
-            />
+            <Bar yAxisId="e" dataKey="exercised" name="Worked out" fill="#3d9e6b" fillOpacity={0.35} barSize={barSize} />
+            <Line yAxisId="w" type="monotone" dataKey="weight" name="Weight" stroke="#6f9bff" strokeWidth={2} connectNulls dot={{ r: 3 }} />
           </ComposedChart>
         </ResponsiveContainer>
       </section>
@@ -119,7 +105,7 @@ export function Charts({ data, range }: Props) {
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={calRows}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-            <XAxis dataKey="day" tick={axisStyle} interval={compact ? 2 : 0} />
+            <XAxis dataKey="day" tick={axisStyle} interval={intv} />
             <YAxis tick={axisStyle} />
             <Tooltip {...tooltipStyle} />
             <Legend />
@@ -138,19 +124,45 @@ export function Charts({ data, range }: Props) {
       </section>
 
       <section className="card">
-        <h3>Ratings — last {range} days</h3>
-        <ResponsiveContainer width="100%" height={220}>
-          <LineChart data={ratingRows}>
+        <h3>Mood &amp; Energy — last {range} days <span className="hint">(1 = low, 5 = high)</span></h3>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={moodEnergyRows}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-            <XAxis dataKey="day" tick={axisStyle} interval={compact ? 2 : 0} />
+            <XAxis dataKey="day" tick={axisStyle} interval={intv} />
             <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} tick={axisStyle} />
             <Tooltip {...tooltipStyle} />
             <Legend />
             <Line type="monotone" dataKey="Mood" stroke="#6f9bff" strokeWidth={2} connectNulls dot={{ r: 2 }} />
-            <Line type="monotone" dataKey="Stomach" stroke="#3d9e6b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
             <Line type="monotone" dataKey="Energy" stroke="#f2a93b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </section>
+
+      <section className="card">
+        <h3>Anxiety &amp; Stress — last {range} days <span className="hint">(1 = low, 5 = high)</span></h3>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={anxStressRows}>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="day" tick={axisStyle} interval={intv} />
+            <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} tick={axisStyle} />
+            <Tooltip {...tooltipStyle} />
+            <Legend />
             <Line type="monotone" dataKey="Anxiety" stroke="#e05d9e" strokeWidth={2} connectNulls dot={{ r: 2 }} />
             <Line type="monotone" dataKey="Stress" stroke="#b35de0" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </section>
+
+      <section className="card">
+        <h3>Stomach — last {range} days <span className="hint">(1 = good, 5 = bad)</span></h3>
+        <ResponsiveContainer width="100%" height={180}>
+          <LineChart data={stomachRows}>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="day" tick={axisStyle} interval={intv} />
+            <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} tick={axisStyle} />
+            <Tooltip {...tooltipStyle} />
+            <Legend />
+            <Line type="monotone" dataKey="Stomach" stroke="#3d9e6b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
           </LineChart>
         </ResponsiveContainer>
       </section>
@@ -160,7 +172,7 @@ export function Charts({ data, range }: Props) {
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={sleepRows}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-            <XAxis dataKey="day" tick={axisStyle} interval={compact ? 2 : 0} />
+            <XAxis dataKey="day" tick={axisStyle} interval={intv} />
             <YAxis domain={[0, 12]} tick={axisStyle} />
             <Tooltip {...tooltipStyle} />
             <Legend />

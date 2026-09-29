@@ -1,6 +1,13 @@
 export interface FoodEntry {
   name: string;
   calories: number;
+  qty: number;
+}
+
+export interface BeverageEntry {
+  name: string;
+  calories: number;
+  qty: number;
 }
 
 export interface ExerciseEntry {
@@ -11,6 +18,7 @@ export interface ExerciseEntry {
 
 export interface DayEntry {
   foods: FoodEntry[];
+  beverages: BeverageEntry[];
   exercises: ExerciseEntry[];
   metamucil: boolean;
   exercised: boolean;
@@ -31,6 +39,7 @@ export interface JournalData {
   calorieGoal: number | null;
   days: Record<string, DayEntry>;
   foodPresets: FoodEntry[];
+  beveragePresets: BeverageEntry[];
   exercisePresets: ExerciseEntry[];
 }
 
@@ -44,6 +53,7 @@ export interface Settings {
 export function emptyDay(): DayEntry {
   return {
     foods: [],
+    beverages: [],
     exercises: [],
     metamucil: false,
     exercised: false,
@@ -62,7 +72,7 @@ export function emptyDay(): DayEntry {
 }
 
 export function emptyJournal(): JournalData {
-  return { calorieGoal: null, days: {}, foodPresets: [], exercisePresets: [] };
+  return { calorieGoal: null, days: {}, foodPresets: [], beveragePresets: [], exercisePresets: [] };
 }
 
 // Fill defaults and migrate legacy field names (e.g. tired -> energy)
@@ -74,6 +84,12 @@ export function normalizeDay(raw: Partial<DayEntry> & { tired?: number | null })
     foods: (raw.foods ?? []).map((f) => ({
       name: f.name ?? '',
       calories: f.calories ?? 0,
+      qty: (f as FoodEntry).qty ?? 1,
+    })),
+    beverages: ((raw as DayEntry).beverages ?? []).map((b: BeverageEntry) => ({
+      name: b.name ?? '',
+      calories: b.calories ?? 0,
+      qty: b.qty ?? 1,
     })),
     exercises: (raw.exercises ?? []).map((e) => ({
       name: e.name ?? '',
@@ -94,6 +110,7 @@ export function normalizeJournal(raw: Partial<JournalData>): JournalData {
     calorieGoal: raw.calorieGoal ?? null,
     days,
     foodPresets: raw.foodPresets ?? [],
+    beveragePresets: raw.beveragePresets ?? [],
     exercisePresets: raw.exercisePresets ?? [],
   };
 }

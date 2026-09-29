@@ -3,7 +3,7 @@ import { Charts } from './components/Charts';
 import { DayEntryForm } from './components/DayEntry';
 import { SettingsPanel } from './components/Settings';
 import { useJournal } from './state';
-import { DayEntry, emptyDay, ExerciseEntry, FoodEntry, JournalData, todayKey } from './types';
+import { BeverageEntry, DayEntry, emptyDay, ExerciseEntry, FoodEntry, JournalData, todayKey } from './types';
 
 function statusText(status: string, dirty: boolean): string {
   if (dirty) return 'Unsaved changes';
@@ -44,16 +44,19 @@ export default function App() {
 
   const handleSave = async () => {
     if (!draft) return;
-    // Collect any newly named food/exercise entries into reusable presets
+    // Collect any newly named food/beverage/exercise entries into reusable presets
     const foods = new Map<string, FoodEntry>();
+    const beverages = new Map<string, BeverageEntry>();
     const exercises = new Map<string, ExerciseEntry>();
     for (const d of Object.values(draft.days)) {
       for (const f of d.foods) if (f.name.trim()) foods.set(f.name.trim(), f);
+      for (const b of d.beverages) if (b.name.trim()) beverages.set(b.name.trim(), b);
       for (const e of d.exercises) if (e.name.trim()) exercises.set(e.name.trim(), e);
     }
     const next: JournalData = {
       ...draft,
       foodPresets: [...draft.foodPresets.filter((p) => !foods.has(p.name)), ...foods.values()],
+      beveragePresets: [...draft.beveragePresets.filter((p) => !beverages.has(p.name)), ...beverages.values()],
       exercisePresets: [...draft.exercisePresets.filter((p) => !exercises.has(p.name)), ...exercises.values()],
     };
     await save(next);
@@ -126,6 +129,7 @@ export default function App() {
         <DayEntryForm
           day={day}
           foodPresets={current.foodPresets}
+          beveragePresets={current.beveragePresets}
           exercisePresets={current.exercisePresets}
           onChange={setDay}
         />
