@@ -266,14 +266,14 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
       </section>
 
       {/* NUMBER INPUTS */}
-      <section className="card grid2">
-        <label>
+      <section className="card inline-fields">
+        <label className="inline-field">
           Bathroom trips
-          <input type="number" min={0} value={day.bathroomTrips || ''} onChange={(e) => set({ bathroomTrips: Number(e.target.value) || 0 })} />
+          <input className="num-sm" type="number" min={0} value={day.bathroomTrips || ''} onChange={(e) => set({ bathroomTrips: Number(e.target.value) || 0 })} />
         </label>
-        <label>
+        <label className="inline-field">
           Sleep hours
-          <input type="number" step="0.5" min={0} max={24} value={day.sleepHours ?? ''} onChange={(e) => set({ sleepHours: e.target.value === '' ? null : Number(e.target.value) })} />
+          <input className="num-sm" type="number" step="0.5" min={0} max={24} value={day.sleepHours ?? ''} onChange={(e) => set({ sleepHours: e.target.value === '' ? null : Number(e.target.value) })} />
         </label>
       </section>
 

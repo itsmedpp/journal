@@ -132,6 +132,8 @@ main { display: flex; flex-direction: column; gap: 16px; }
 }
 .rating-btn.active { background: #4f7cff; color: #fff; border-color: #4f7cff; }
 
+.inline-fields { display: flex; gap: 16px; flex-wrap: wrap; }
+.inline-field { display: flex; flex-direction: row; align-items: center; gap: 8px; font-size: 14px; white-space: nowrap; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
