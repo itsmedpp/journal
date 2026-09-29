@@ -27,6 +27,7 @@ body {
   gap: 10px;
 }
 .date-nav { display: flex; align-items: center; gap: 6px; }
+.goals-row { display: flex; gap: 16px; flex-wrap: wrap; }
 .goal { display: flex; align-items: center; gap: 6px; font-size: 14px; }
 .goal input { width: 90px; }
 .status { font-size: 13px; color: #9aa0ad; }

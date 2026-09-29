@@ -94,6 +94,20 @@ export default function App() {
             />
             <button type="button" className="btn secondary" onClick={() => shiftDay(1)}>→</button>
           </div>
+          <span className={`status ${status} ${dirty ? 'dirty' : ''}`}>
+            {statusText(status, dirty)}
+          </span>
+          <button type="button" className="btn" onClick={handleSave} disabled={!dirty || status === 'saving'}>
+            Save
+          </button>
+          <button type="button" className="btn secondary" onClick={handleRefresh} disabled={!settings || status === 'loading'}>
+            Sync
+          </button>
+          <button type="button" className="btn secondary" onClick={() => setShowSettings(true)}>
+            Settings
+          </button>
+        </div>
+        <div className="goals-row">
           <label className="goal">
             Calorie goal
             <input
@@ -113,18 +127,6 @@ export default function App() {
               onChange={(e) => setWeightGoal(e.target.value === '' ? null : Number(e.target.value))}
             />
           </label>
-          <span className={`status ${status} ${dirty ? 'dirty' : ''}`}>
-            {statusText(status, dirty)}
-          </span>
-          <button type="button" className="btn" onClick={handleSave} disabled={!dirty || status === 'saving'}>
-            Save
-          </button>
-          <button type="button" className="btn secondary" onClick={handleRefresh} disabled={!settings || status === 'loading'}>
-            Sync
-          </button>
-          <button type="button" className="btn secondary" onClick={() => setShowSettings(true)}>
-            Settings
-          </button>
         </div>
         {error && <div className="error">{error}</div>}
       </header>
