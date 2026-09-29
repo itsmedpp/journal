@@ -13,7 +13,7 @@ function Rating({ label, value, onChange }: { label: string; value: number | nul
     <div className="rating">
       <span className="rating-label">{label}</span>
       <div className="rating-buttons">
-        {[1, 2, 3, 4, 5].map((n) => (
+        {[0, 1, 2, 3, 4, 5].map((n) => (
           <button
             key={n}
             type="button"
@@ -239,10 +239,6 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
           <input type="checkbox" checked={day.nap} onChange={(e) => set({ nap: e.target.checked })} />
           Nap
         </label>
-        <label className="check">
-          <input type="checkbox" checked={day.headache} onChange={(e) => set({ headache: e.target.checked })} />
-          Headache
-        </label>
       </section>
 
       {/* RATINGS — Mood & Energy (1 = low, 5 = high) */}
@@ -259,10 +255,11 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
         <Rating label="Stress" value={day.stress} onChange={(v) => set({ stress: v })} />
       </section>
 
-      {/* RATINGS — Stomach (1 = good, 5 = bad) */}
+      {/* RATINGS — Stomach Ache & Headache (0 = none, 5 = severe) */}
       <section className="card">
-        <h3 className="rating-group-title">Stomach <span className="hint">(1 = good, 5 = bad)</span></h3>
-        <Rating label="Stomach" value={day.stomach} onChange={(v) => set({ stomach: v })} />
+        <h3 className="rating-group-title">Stomach Ache &amp; Headache <span className="hint">(0 = none, 5 = severe)</span></h3>
+        <Rating label="Stomach Ache" value={day.stomach} onChange={(v) => set({ stomach: v })} />
+        <Rating label="Headache" value={day.headache} onChange={(v) => set({ headache: v })} />
       </section>
 
       {/* NUMBER INPUTS */}

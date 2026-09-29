@@ -23,7 +23,7 @@ export interface DayEntry {
   metamucil: boolean;
   exercised: boolean;
   nap: boolean;
-  headache: boolean;
+  headache: number | null;
   mood: number | null;
   stomach: number | null;
   energy: number | null;
@@ -37,6 +37,7 @@ export interface DayEntry {
 
 export interface JournalData {
   calorieGoal: number | null;
+  weightGoal: number | null;
   days: Record<string, DayEntry>;
   foodPresets: FoodEntry[];
   beveragePresets: BeverageEntry[];
@@ -58,7 +59,7 @@ export function emptyDay(): DayEntry {
     metamucil: false,
     exercised: false,
     nap: false,
-    headache: false,
+    headache: null,
     mood: null,
     stomach: null,
     energy: null,
@@ -72,7 +73,7 @@ export function emptyDay(): DayEntry {
 }
 
 export function emptyJournal(): JournalData {
-  return { calorieGoal: null, days: {}, foodPresets: [], beveragePresets: [], exercisePresets: [] };
+  return { calorieGoal: null, weightGoal: null, days: {}, foodPresets: [], beveragePresets: [], exercisePresets: [] };
 }
 
 // Fill defaults and migrate legacy field names (e.g. tired -> energy)
@@ -96,6 +97,7 @@ export function normalizeDay(raw: Partial<DayEntry> & { tired?: number | null })
       caloriesBurned: e.caloriesBurned ?? 0,
       hours: e.hours ?? null,
     })),
+    headache: typeof raw.headache === 'boolean' ? (raw.headache ? 3 : null) : (raw.headache ?? null),
     energy: raw.energy ?? raw.tired ?? null,
     sleepHours: raw.sleepHours ?? null,
   };
@@ -108,6 +110,7 @@ export function normalizeJournal(raw: Partial<JournalData>): JournalData {
   }
   return {
     calorieGoal: raw.calorieGoal ?? null,
+    weightGoal: raw.weightGoal ?? null,
     days,
     foodPresets: raw.foodPresets ?? [],
     beveragePresets: raw.beveragePresets ?? [],

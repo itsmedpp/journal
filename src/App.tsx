@@ -42,6 +42,9 @@ export default function App() {
   const setGoal = (v: number | null) =>
     update((j) => ({ ...j, calorieGoal: v }));
 
+  const setWeightGoal = (v: number | null) =>
+    update((j) => ({ ...j, weightGoal: v }));
+
   const handleSave = async () => {
     if (!draft) return;
     // Collect any newly named food/beverage/exercise entries into reusable presets
@@ -98,6 +101,16 @@ export default function App() {
               min={0}
               value={current.calorieGoal ?? ''}
               onChange={(e) => setGoal(e.target.value === '' ? null : Number(e.target.value))}
+            />
+          </label>
+          <label className="goal">
+            Goal weight
+            <input
+              type="number"
+              min={0}
+              step="0.1"
+              value={current.weightGoal ?? ''}
+              onChange={(e) => setWeightGoal(e.target.value === '' ? null : Number(e.target.value))}
             />
           </label>
           <span className={`status ${status} ${dirty ? 'dirty' : ''}`}>
