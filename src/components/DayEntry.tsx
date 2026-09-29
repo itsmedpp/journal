@@ -85,6 +85,17 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
 
   return (
     <div className="day-form">
+      {/* SUMMARY — Totals + Weight */}
+      <section className="card summary-row">
+        <div className="total"><span>Calories in</span><strong>{calIn}</strong></div>
+        <div className="total"><span>Calories burned</span><strong>{calOut}</strong></div>
+        <div className="total"><span>Net</span><strong>{calIn - calOut}</strong></div>
+        <label className="weight-inline">
+          Weight
+          <input type="number" step="0.1" min={0} value={day.weight ?? ''} onChange={(e) => set({ weight: e.target.value === '' ? null : Number(e.target.value) })} />
+        </label>
+      </section>
+
       {/* FOOD */}
       <section className="card">
         <div className="card-header">
@@ -218,22 +229,11 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
         </datalist>
       </section>
 
-      {/* TOTALS */}
-      <section className="card totals">
-        <div className="total"><span>Calories in</span><strong>{calIn}</strong></div>
-        <div className="total"><span>Calories burned</span><strong>{calOut}</strong></div>
-        <div className="total"><span>Net</span><strong>{calIn - calOut}</strong></div>
-      </section>
-
       {/* CHECKBOXES */}
       <section className="card">
         <label className="check">
           <input type="checkbox" checked={day.metamucil} onChange={(e) => set({ metamucil: e.target.checked })} />
           Metamucil
-        </label>
-        <label className="check">
-          <input type="checkbox" checked={day.exercised} onChange={(e) => set({ exercised: e.target.checked })} />
-          Exercised
         </label>
         <label className="check">
           <input type="checkbox" checked={day.nap} onChange={(e) => set({ nap: e.target.checked })} />
@@ -266,14 +266,10 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
       </section>
 
       {/* NUMBER INPUTS */}
-      <section className="card grid3">
+      <section className="card grid2">
         <label>
           Bathroom trips
           <input type="number" min={0} value={day.bathroomTrips || ''} onChange={(e) => set({ bathroomTrips: Number(e.target.value) || 0 })} />
-        </label>
-        <label>
-          Weight
-          <input type="number" step="0.1" min={0} value={day.weight ?? ''} onChange={(e) => set({ weight: e.target.value === '' ? null : Number(e.target.value) })} />
         </label>
         <label>
           Sleep hours

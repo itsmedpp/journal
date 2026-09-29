@@ -109,6 +109,9 @@ main { display: flex; flex-direction: column; gap: 16px; }
 .row .num { width: 90px; }
 .row .num-sm { width: 60px; }
 
+.summary-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end; }
+.weight-inline { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #9aa0ad; margin-left: auto; }
+.weight-inline input { width: 90px; }
 .totals { display: flex; gap: 24px; flex-wrap: wrap; }
 .total { display: flex; flex-direction: column; font-size: 13px; color: #9aa0ad; }
 .total strong { font-size: 20px; color: #e6e8ec; }

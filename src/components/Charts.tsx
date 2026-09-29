@@ -49,7 +49,7 @@ export function Charts({ data, range }: Props) {
 
   const weightRows = keys.map((k) => {
     const d = data.days[k];
-    return { day: lbl(k), weight: d?.weight ?? null, exercised: d?.exercised ? 1 : 0 };
+    return { day: lbl(k), weight: d?.weight ?? null, exercised: d && d.exercises.length > 0 ? 1 : 0 };
   });
 
   const calRows = keys.map((k) => {
