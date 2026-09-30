@@ -52,8 +52,8 @@ export default function App() {
     const beverages = new Map<string, BeverageEntry>();
     const exercises = new Map<string, ExerciseEntry>();
     for (const d of Object.values(draft.days)) {
-      for (const f of d.foods) if (f.name.trim()) foods.set(f.name.trim(), f);
-      for (const b of d.beverages) if (b.name.trim()) beverages.set(b.name.trim(), b);
+      for (const f of d.foods) if (f.name.trim()) foods.set(f.name.trim(), { name: f.name.trim(), caloriesPerServing: f.caloriesPerServing, qty: f.qty });
+      for (const b of d.beverages) if (b.name.trim()) beverages.set(b.name.trim(), { name: b.name.trim(), caloriesPerServing: b.caloriesPerServing, qty: b.qty });
       for (const e of d.exercises) if (e.name.trim()) exercises.set(e.name.trim(), e);
     }
     const next: JournalData = {

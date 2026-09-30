@@ -1,13 +1,15 @@
 export interface FoodEntry {
   name: string;
-  calories: number;
+  caloriesPerServing: number;
   qty: number;
+  calories?: number; // legacy
 }
 
 export interface BeverageEntry {
   name: string;
-  calories: number;
+  caloriesPerServing: number;
   qty: number;
+  calories?: number; // legacy
 }
 
 export interface ExerciseEntry {
@@ -84,12 +86,12 @@ export function normalizeDay(raw: Partial<DayEntry> & { tired?: number | null })
     ...raw,
     foods: (raw.foods ?? []).map((f) => ({
       name: f.name ?? '',
-      calories: f.calories ?? 0,
+      caloriesPerServing: (f as FoodEntry).caloriesPerServing ?? f.calories ?? 0,
       qty: (f as FoodEntry).qty ?? 1,
     })),
     beverages: ((raw as DayEntry).beverages ?? []).map((b: BeverageEntry) => ({
       name: b.name ?? '',
-      calories: b.calories ?? 0,
+      caloriesPerServing: b.caloriesPerServing ?? b.calories ?? 0,
       qty: b.qty ?? 1,
     })),
     exercises: (raw.exercises ?? []).map((e) => ({

@@ -55,8 +55,8 @@ export function Charts({ data, range }: Props) {
   const calRows = keys.map((k) => {
     const d = data.days[k];
     const inCal = d
-      ? d.foods.reduce((s, f) => s + (f.calories || 0) * (f.qty || 1), 0)
-        + d.beverages.reduce((s, b) => s + (b.calories || 0) * (b.qty || 1), 0)
+      ? d.foods.reduce((s, f) => s + (f.caloriesPerServing || 0) * (f.qty || 1), 0)
+        + d.beverages.reduce((s, b) => s + (b.caloriesPerServing || 0) * (b.qty || 1), 0)
       : 0;
     const outCal = d ? d.exercises.reduce((s, e) => s + (e.caloriesBurned || 0), 0) : 0;
     return { day: lbl(k), 'Calories in': inCal, Burned: outCal };

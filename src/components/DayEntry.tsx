@@ -31,15 +31,15 @@ function Rating({ label, value, onChange }: { label: string; value: number | nul
 export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePresets, onChange }: Props) {
   const set = (patch: Partial<Day>) => onChange({ ...day, ...patch });
 
-  const updateFood = (i: number, key: 'name' | 'calories' | 'qty', v: string) => {
+  const updateFood = (i: number, key: 'name' | 'caloriesPerServing' | 'qty', v: string) => {
     const foods = day.foods.slice();
     const next = { ...foods[i] };
     if (key === 'name') {
       next.name = v;
       const preset = foodPresets.find((p) => p.name === v);
-      if (preset) { next.calories = preset.calories; next.qty = preset.qty; }
-    } else if (key === 'calories') {
-      next.calories = Number(v) || 0;
+      if (preset) { next.caloriesPerServing = preset.caloriesPerServing; next.qty = preset.qty; }
+    } else if (key === 'caloriesPerServing') {
+      next.caloriesPerServing = Number(v) || 0;
     } else {
       next.qty = Number(v) || 1;
     }
@@ -47,15 +47,15 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
     set({ foods });
   };
 
-  const updateBeverage = (i: number, key: 'name' | 'calories' | 'qty', v: string) => {
+  const updateBeverage = (i: number, key: 'name' | 'caloriesPerServing' | 'qty', v: string) => {
     const beverages = day.beverages.slice();
     const next = { ...beverages[i] };
     if (key === 'name') {
       next.name = v;
       const preset = beveragePresets.find((p) => p.name === v);
-      if (preset) { next.calories = preset.calories; next.qty = preset.qty; }
-    } else if (key === 'calories') {
-      next.calories = Number(v) || 0;
+      if (preset) { next.caloriesPerServing = preset.caloriesPerServing; next.qty = preset.qty; }
+    } else if (key === 'caloriesPerServing') {
+      next.caloriesPerServing = Number(v) || 0;
     } else {
       next.qty = Number(v) || 1;
     }
@@ -79,8 +79,8 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
     set({ exercises });
   };
 
-  const calIn = day.foods.reduce((s, f) => s + (f.calories || 0) * (f.qty || 1), 0)
-    + day.beverages.reduce((s, b) => s + (b.calories || 0) * (b.qty || 1), 0);
+  const calIn = day.foods.reduce((s, f) => s + (f.caloriesPerServing || 0) * (f.qty || 1), 0)
+    + day.beverages.reduce((s, b) => s + (b.caloriesPerServing || 0) * (b.qty || 1), 0);
   const calOut = day.exercises.reduce((s, e) => s + (e.caloriesBurned || 0), 0);
 
   return (
@@ -100,7 +100,7 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
       <section className="card">
         <div className="card-header">
           <h3>Food</h3>
-          <button type="button" className="btn small" onClick={() => set({ foods: [...day.foods, { name: '', calories: 0, qty: 1 }] })}>
+          <button type="button" className="btn small" onClick={() => set({ foods: [...day.foods, { name: '', caloriesPerServing: 0, qty: 1 }] })}>
             + Add food
           </button>
         </div>
@@ -126,9 +126,9 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
               className="num"
               type="number"
               min={0}
-              placeholder="Cal"
-              value={f.calories || ''}
-              onChange={(e) => updateFood(i, 'calories', e.target.value)}
+              placeholder="Cal/serving"
+              value={f.caloriesPerServing || ''}
+              onChange={(e) => updateFood(i, 'caloriesPerServing', e.target.value)}
             />
             <button type="button" className="btn icon" onClick={() => set({ foods: day.foods.filter((_, j) => j !== i) })}>
               ×
@@ -144,7 +144,7 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
       <section className="card">
         <div className="card-header">
           <h3>Beverages</h3>
-          <button type="button" className="btn small" onClick={() => set({ beverages: [...day.beverages, { name: '', calories: 0, qty: 1 }] })}>
+          <button type="button" className="btn small" onClick={() => set({ beverages: [...day.beverages, { name: '', caloriesPerServing: 0, qty: 1 }] })}>
             + Add beverage
           </button>
         </div>
@@ -170,9 +170,9 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
               className="num"
               type="number"
               min={0}
-              placeholder="Cal"
-              value={b.calories || ''}
-              onChange={(e) => updateBeverage(i, 'calories', e.target.value)}
+              placeholder="Cal/serving"
+              value={b.caloriesPerServing || ''}
+              onChange={(e) => updateBeverage(i, 'caloriesPerServing', e.target.value)}
             />
             <button type="button" className="btn icon" onClick={() => set({ beverages: day.beverages.filter((_, j) => j !== i) })}>
               ×
