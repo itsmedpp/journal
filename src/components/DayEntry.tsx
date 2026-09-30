@@ -106,33 +106,36 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
         </div>
         {day.foods.length === 0 && <p className="hint">No food entries yet.</p>}
         {day.foods.map((f, i) => (
-          <div className="row" key={i}>
-            <input
-              className="grow"
-              placeholder="Food name"
-              list="food-presets"
-              value={f.name}
-              onChange={(e) => updateFood(i, 'name', e.target.value)}
-            />
-            <input
-              className="num-sm"
-              type="number"
-              min={1}
-              placeholder="Qty"
-              value={f.qty || ''}
-              onChange={(e) => updateFood(i, 'qty', e.target.value)}
-            />
-            <input
-              className="num"
-              type="number"
-              min={0}
-              placeholder="Cal/serving"
-              value={f.caloriesPerServing || ''}
-              onChange={(e) => updateFood(i, 'caloriesPerServing', e.target.value)}
-            />
-            <button type="button" className="btn icon" onClick={() => set({ foods: day.foods.filter((_, j) => j !== i) })}>
-              ×
-            </button>
+          <div className="entry-row" key={i}>
+            <div className="row">
+              <input
+                className="grow"
+                placeholder="Food name"
+                list="food-presets"
+                value={f.name}
+                onChange={(e) => updateFood(i, 'name', e.target.value)}
+              />
+              <input
+                className="num-sm"
+                type="number"
+                min={1}
+                placeholder="Qty"
+                value={f.qty || ''}
+                onChange={(e) => updateFood(i, 'qty', e.target.value)}
+              />
+              <input
+                className="num"
+                type="number"
+                min={0}
+                placeholder="Cal/serving"
+                value={f.caloriesPerServing || ''}
+                onChange={(e) => updateFood(i, 'caloriesPerServing', e.target.value)}
+              />
+              <button type="button" className="btn icon" onClick={() => set({ foods: day.foods.filter((_, j) => j !== i) })}>
+                ×
+              </button>
+            </div>
+            <div className="entry-total">{(f.caloriesPerServing || 0) * (f.qty || 1)} cal</div>
           </div>
         ))}
         <datalist id="food-presets">
@@ -150,33 +153,36 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
         </div>
         {day.beverages.length === 0 && <p className="hint">No beverage entries yet.</p>}
         {day.beverages.map((b, i) => (
-          <div className="row" key={i}>
-            <input
-              className="grow"
-              placeholder="Beverage name"
-              list="beverage-presets"
-              value={b.name}
-              onChange={(e) => updateBeverage(i, 'name', e.target.value)}
-            />
-            <input
-              className="num-sm"
-              type="number"
-              min={1}
-              placeholder="Qty"
-              value={b.qty || ''}
-              onChange={(e) => updateBeverage(i, 'qty', e.target.value)}
-            />
-            <input
-              className="num"
-              type="number"
-              min={0}
-              placeholder="Cal/serving"
-              value={b.caloriesPerServing || ''}
-              onChange={(e) => updateBeverage(i, 'caloriesPerServing', e.target.value)}
-            />
-            <button type="button" className="btn icon" onClick={() => set({ beverages: day.beverages.filter((_, j) => j !== i) })}>
-              ×
-            </button>
+          <div className="entry-row" key={i}>
+            <div className="row">
+              <input
+                className="grow"
+                placeholder="Beverage name"
+                list="beverage-presets"
+                value={b.name}
+                onChange={(e) => updateBeverage(i, 'name', e.target.value)}
+              />
+              <input
+                className="num-sm"
+                type="number"
+                min={1}
+                placeholder="Qty"
+                value={b.qty || ''}
+                onChange={(e) => updateBeverage(i, 'qty', e.target.value)}
+              />
+              <input
+                className="num"
+                type="number"
+                min={0}
+                placeholder="Cal/serving"
+                value={b.caloriesPerServing || ''}
+                onChange={(e) => updateBeverage(i, 'caloriesPerServing', e.target.value)}
+              />
+              <button type="button" className="btn icon" onClick={() => set({ beverages: day.beverages.filter((_, j) => j !== i) })}>
+                ×
+              </button>
+            </div>
+            <div className="entry-total">{(b.caloriesPerServing || 0) * (b.qty || 1)} cal</div>
           </div>
         ))}
         <datalist id="beverage-presets">

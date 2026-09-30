@@ -105,6 +105,9 @@ main { display: flex; flex-direction: column; gap: 16px; }
 .card label.check { flex-direction: row; align-items: center; gap: 8px; font-size: 15px; }
 .card section, .card .check { margin-bottom: 8px; }
 
+.entry-row { margin-bottom: 10px; }
+.entry-row .row { margin-bottom: 4px; }
+.entry-total { font-size: 12px; color: #9aa0ad; padding-left: 2px; }
 .row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
 .row .grow { flex: 1; min-width: 0; }
 .row .num { width: 90px; }
