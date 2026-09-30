@@ -82,6 +82,11 @@ export function Charts({ data, range }: Props) {
     'Sleep hours': data.days[k]?.sleepHours ?? null,
   }));
 
+  const painRows = keys.map((k) => {
+    const d = data.days[k];
+    return { day: lbl(k), Neck: d?.neck ?? null, Shoulders: d?.shoulders ?? null, Back: d?.back ?? null, Legs: d?.legs ?? null };
+  });
+
   return (
     <div className="charts">
       <section className="card">
@@ -173,6 +178,23 @@ export function Charts({ data, range }: Props) {
             <Legend />
             <Line type="monotone" dataKey="Stomach Ache" stroke="#3d9e6b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
             <Line type="monotone" dataKey="Headache" stroke="#e05d5d" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </section>
+
+      <section className="card">
+        <h3>Pain — last {range} days <span className="hint">(0 = none, 5 = severe)</span></h3>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={painRows}>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="day" tick={axisStyle} interval={intv} />
+            <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} tick={axisStyle} />
+            <Tooltip {...tooltipStyle} />
+            <Legend />
+            <Line type="monotone" dataKey="Neck" stroke="#6f9bff" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Shoulders" stroke="#f2a93b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Back" stroke="#e05d5d" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Legs" stroke="#3d9e6b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
           </LineChart>
         </ResponsiveContainer>
       </section>

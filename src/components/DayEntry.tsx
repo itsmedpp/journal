@@ -268,6 +268,15 @@ export function DayEntryForm({ day, foodPresets, beveragePresets, exercisePreset
         <Rating label="Headache" value={day.headache} onChange={(v) => set({ headache: v })} />
       </section>
 
+      {/* RATINGS — Pain (0 = none, 5 = severe) */}
+      <section className="card">
+        <h3 className="rating-group-title">Pain <span className="hint">(0 = none, 5 = severe)</span></h3>
+        <Rating label="Neck" value={day.neck} onChange={(v) => set({ neck: v })} />
+        <Rating label="Shoulders" value={day.shoulders} onChange={(v) => set({ shoulders: v })} />
+        <Rating label="Back" value={day.back} onChange={(v) => set({ back: v })} />
+        <Rating label="Legs" value={day.legs} onChange={(v) => set({ legs: v })} />
+      </section>
+
       {/* NUMBER INPUTS */}
       <section className="card inline-fields">
         <label className="inline-field">

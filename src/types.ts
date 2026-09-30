@@ -31,6 +31,10 @@ export interface DayEntry {
   energy: number | null;
   anxiety: number | null;
   stress: number | null;
+  neck: number | null;
+  shoulders: number | null;
+  back: number | null;
+  legs: number | null;
   bathroomTrips: number;
   weight: number | null;
   sleepHours: number | null;
@@ -67,6 +71,10 @@ export function emptyDay(): DayEntry {
     energy: null,
     anxiety: null,
     stress: null,
+    neck: null,
+    shoulders: null,
+    back: null,
+    legs: null,
     bathroomTrips: 0,
     weight: null,
     sleepHours: null,
