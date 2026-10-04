@@ -54,12 +54,14 @@ export function Charts({ data, range }: Props) {
 
   const calRows = keys.map((k) => {
     const d = data.days[k];
-    const inCal = d
+    const foodCal = d
       ? d.foods.reduce((s, f) => s + (f.caloriesPerServing || 0) * (f.qty || 1), 0)
-        + d.beverages.reduce((s, b) => s + (b.caloriesPerServing || 0) * (b.qty || 1), 0)
+      : 0;
+    const bevCal = d
+      ? d.beverages.reduce((s, b) => s + (b.caloriesPerServing || 0) * (b.qty || 1), 0)
       : 0;
     const outCal = d ? d.exercises.reduce((s, e) => s + (e.caloriesBurned || 0), 0) : 0;
-    return { day: lbl(k), 'Calories in': inCal, Burned: outCal };
+    return { day: lbl(k), Food: foodCal, Beverages: bevCal, Burned: outCal };
   });
 
   const moodEnergyRows = keys.map((k) => {
@@ -84,7 +86,7 @@ export function Charts({ data, range }: Props) {
 
   const painRows = keys.map((k) => {
     const d = data.days[k];
-    return { day: lbl(k), Neck: d?.neck ?? null, Shoulders: d?.shoulders ?? null, Back: d?.back ?? null, Legs: d?.legs ?? null };
+    return { day: lbl(k), 'Upper Body': d?.upperBodyPain ?? null, Back: d?.backPain ?? null, 'Lower Body': d?.lowerBodyPain ?? null };
   });
 
   return (
@@ -123,7 +125,8 @@ export function Charts({ data, range }: Props) {
             <YAxis tick={axisStyle} />
             <Tooltip {...tooltipStyle} />
             <Legend />
-            <Bar dataKey="Calories in" fill="#6f9bff" barSize={barSize} />
+            <Bar dataKey="Food" stackId="in" fill="#6f9bff" barSize={barSize} />
+            <Bar dataKey="Beverages" stackId="in" fill="#4fd0ff" barSize={barSize} />
             <Bar dataKey="Burned" fill="#f2a93b" barSize={barSize} />
             {data.calorieGoal != null && (
               <ReferenceLine
@@ -191,10 +194,9 @@ export function Charts({ data, range }: Props) {
             <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} tick={axisStyle} />
             <Tooltip {...tooltipStyle} />
             <Legend />
-            <Line type="monotone" dataKey="Neck" stroke="#6f9bff" strokeWidth={2} connectNulls dot={{ r: 2 }} />
-            <Line type="monotone" dataKey="Shoulders" stroke="#f2a93b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Upper Body" stroke="#6f9bff" strokeWidth={2} connectNulls dot={{ r: 2 }} />
             <Line type="monotone" dataKey="Back" stroke="#e05d5d" strokeWidth={2} connectNulls dot={{ r: 2 }} />
-            <Line type="monotone" dataKey="Legs" stroke="#3d9e6b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
+            <Line type="monotone" dataKey="Lower Body" stroke="#3d9e6b" strokeWidth={2} connectNulls dot={{ r: 2 }} />
           </LineChart>
         </ResponsiveContainer>
       </section>

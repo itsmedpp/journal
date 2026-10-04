@@ -31,10 +31,9 @@ export interface DayEntry {
   energy: number | null;
   anxiety: number | null;
   stress: number | null;
-  neck: number | null;
-  shoulders: number | null;
-  back: number | null;
-  legs: number | null;
+  upperBodyPain: number | null;
+  backPain: number | null;
+  lowerBodyPain: number | null;
   bathroomTrips: number;
   weight: number | null;
   sleepHours: number | null;
@@ -71,10 +70,9 @@ export function emptyDay(): DayEntry {
     energy: null,
     anxiety: null,
     stress: null,
-    neck: null,
-    shoulders: null,
-    back: null,
-    legs: null,
+    upperBodyPain: null,
+    backPain: null,
+    lowerBodyPain: null,
     bathroomTrips: 0,
     weight: null,
     sleepHours: null,
@@ -102,6 +100,9 @@ export function normalizeDay(raw: Partial<DayEntry> & { tired?: number | null })
       caloriesPerServing: b.caloriesPerServing ?? b.calories ?? 0,
       qty: b.qty ?? 1,
     })),
+    upperBodyPain: (raw as DayEntry).upperBodyPain ?? Math.max((raw as DayEntry).neck ?? 0, (raw as DayEntry).shoulders ?? 0) || null,
+    lowerBodyPain: (raw as DayEntry).lowerBodyPain ?? (raw as DayEntry).legs ?? null,
+    backPain: (raw as DayEntry).backPain ?? (raw as DayEntry).back ?? null,
     exercises: (raw.exercises ?? []).map((e) => ({
       name: e.name ?? '',
       caloriesBurned: e.caloriesBurned ?? 0,
