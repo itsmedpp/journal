@@ -84,6 +84,11 @@ export function emptyJournal(): JournalData {
   return { calorieGoal: null, weightGoal: null, days: {}, foodPresets: [], beveragePresets: [], exercisePresets: [] };
 }
 
+function ratingOrNull(v: unknown): number | null {
+  const n = Number(v);
+  return Number.isNaN(n) ? null : n;
+}
+
 // Fill defaults and migrate legacy field names (e.g. tired -> energy)
 export function normalizeDay(raw: Partial<DayEntry> & { tired?: number | null }): DayEntry {
   const base = emptyDay();
@@ -100,9 +105,12 @@ export function normalizeDay(raw: Partial<DayEntry> & { tired?: number | null })
       caloriesPerServing: b.caloriesPerServing ?? b.calories ?? 0,
       qty: b.qty ?? 1,
     })),
-    upperBodyPain: ((raw as DayEntry).upperBodyPain ?? Math.max((raw as Record<string, unknown>).neck ?? 0, (raw as Record<string, unknown>).shoulders ?? 0) as number) || null,
-    lowerBodyPain: ((raw as DayEntry).lowerBodyPain ?? (raw as Record<string, unknown>).legs) as number | null,
-    backPain: ((raw as DayEntry).backPain ?? (raw as Record<string, unknown>).back) as number | null,
+    upperBodyPain: ratingOrNull((raw as Record<string, unknown>).upperBodyPain) ??
+      (ratingOrNull((raw as Record<string, unknown>).neck) != null || ratingOrNull((raw as Record<string, unknown>).shoulders) != null
+        ? Math.max(ratingOrNull((raw as Record<string, unknown>).neck) ?? 0, ratingOrNull((raw as Record<string, unknown>).shoulders) ?? 0)
+        : null),
+    lowerBodyPain: ratingOrNull((raw as Record<string, unknown>).lowerBodyPain) ?? ratingOrNull((raw as Record<string, unknown>).legs),
+    backPain: ratingOrNull((raw as Record<string, unknown>).backPain) ?? ratingOrNull((raw as Record<string, unknown>).back),
     exercises: (raw.exercises ?? []).map((e) => ({
       name: e.name ?? '',
       caloriesBurned: e.caloriesBurned ?? 0,
