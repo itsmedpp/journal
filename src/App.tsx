@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Charts } from './components/Charts';
 import { DayEntryForm } from './components/DayEntry';
+import { NotesHistory } from './components/NotesHistory';
 import { SettingsPanel } from './components/Settings';
 import { useJournal } from './state';
 import { BeverageEntry, DayEntry, emptyDay, ExerciseEntry, FoodEntry, JournalData, todayKey } from './types';
@@ -22,6 +23,7 @@ export default function App() {
   const [dateKey, setDateKey] = useState(todayKey());
   const [draft, setDraft] = useState<JournalData | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
   const [range, setRange] = useState<7 | 30>(7);
 
   const current = draft ?? data;
@@ -103,6 +105,9 @@ export default function App() {
           <button type="button" className="btn secondary" onClick={handleRefresh} disabled={!settings || status === 'loading'}>
             Sync
           </button>
+          <button type="button" className="btn secondary" onClick={() => setShowNotes(true)}>
+            Notes History
+          </button>
           <button type="button" className="btn secondary" onClick={() => setShowSettings(true)}>
             Settings
           </button>
@@ -167,6 +172,8 @@ export default function App() {
         </div>
         <Charts data={current} range={range} />
       </main>
+
+      {showNotes && <NotesHistory data={current} onClose={() => setShowNotes(false)} />}
 
       {showSettings && (
         <SettingsPanel

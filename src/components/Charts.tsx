@@ -211,6 +211,12 @@ export function Charts({ data, range }: Props) {
             <Tooltip {...tooltipStyle} />
             <Legend />
             <Bar dataKey="Sleep hours" fill="#9b7bff" barSize={barSize} />
+            <ReferenceLine
+              y={7}
+              stroke="#e05d5d"
+              strokeDasharray="6 4"
+              label={{ value: 'Goal 7h', position: 'insideTopRight', fill: '#e05d5d' }}
+            />
           </ComposedChart>
         </ResponsiveContainer>
       </section>
